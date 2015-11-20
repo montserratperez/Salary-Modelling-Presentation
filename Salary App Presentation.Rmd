@@ -1,0 +1,48 @@
+---
+title: "Salary Optimisation"
+author: "Montserrat Perez"
+date: "Friday, November 20, 2015"
+output: slidy_presentation
+---
+
+## What does this app do
+
+The objective of the app is to allow users to identify the optimum salary that they could expect to achieve in salary negotiations.  We use actual salary, high end expected salary and associated probability, low end expected salary and associated probability as inputs.
+
+***
+## Market
+
+Who would be interested in purchasing this app
+
+This app would be of interest to:
+
+- sites looking to add features of general public interest to increase traffic 
+- organisations involved in the human resource industry
+- accountancy and legal professionals 
+
+***
+## How does it work
+
+The server.R function models the inputs using a logistic growth function (similar to the cumulative density function of most distributions)to come up with a prediction.
+
+Example:
+Imagine your current salary is £25K, in new job negotiations you have 80% chance of getting £30K or 20% change of getting £50K. What is the optimum that you should aim for. 
+
+```{r echo=FALSE}
+my.offer <- function(x1=30,py.x1=.8,x2=50,py.x2=.2,ev.no=25,high=50,p.payoff=1) {
+        theta <- solve(matrix(c(1,1,x1,x2),nc=2),matrix(qlogis(c(py.x1,py.x2)),nc=1))  
+        payoff <- function(x) {     
+        tmp <- exp(-theta[1]-theta[2]*x)
+                return( (ev.no + ifelse(ev.no>x*p.payoff,ev.no,x*p.payoff)*tmp)/(1+tmp) )
+        }  
+        return(optimize(payoff,interval=c(ev.no,high),maximum=TRUE))        
+}
+my.offer()
+```
+***
+
+## Next steps
+The app is at proof of concept stage and will need a substantial amount of further development, testing and bug fixing before it can be deployed. 
+
+
+
